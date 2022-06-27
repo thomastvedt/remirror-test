@@ -1,7 +1,6 @@
 import React, { CSSProperties, FC } from 'react';
 import { useActive, useCommands } from '@remirror/react';
 import styled from 'styled-components';
-import { Button, Space } from 'antd';
 import {
   BoldOutlined,
   CheckSquareOutlined,
@@ -10,7 +9,7 @@ import {
   StrikethroughOutlined,
   UnderlineOutlined,
   UnorderedListOutlined,
-  UploadOutlined,
+
 } from '@ant-design/icons';
 import CheckableTag from 'antd/es/tag/CheckableTag';
 
@@ -39,14 +38,6 @@ interface Props {
   style?: CSSProperties;
 }
 
-const UploadButton = styled(Button)`
-  && {
-    background-color: unset;
-    border: none;
-    box-shadow: none;
-  }
-`;
-
 export const TopToolbar: FC<Props> = (props) => {
   const {
     toggleBold,
@@ -57,7 +48,6 @@ export const TopToolbar: FC<Props> = (props) => {
     toggleOrderedList,
     toggleTaskList,
     toggleBlockquote,
-    uploadImageButt,
   } = useCommands();
   const active = useActive();
   return (

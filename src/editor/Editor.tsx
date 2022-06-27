@@ -143,42 +143,43 @@ const Editor = forwardRef<CompanyEditorDef | undefined, Props>(
     const enableAutoSave = onAutoSave !== undefined;
 
     const extensions = useCallback(
-      () => [
-        new LinkExtension({
-          autoLink: true,
-        }),
-        new GapCursorExtension(),
-        new HardBreakExtension(),
-        new ImageExtension({
-          enableResizing: true, // TODO: setting to editable won't work
-          // uploadHandler: connectImageUploadHandler,
-          priority: ExtensionPriority.High,
-        }),
-        new ItalicExtension(),
-        new StrikeExtension(),
-        new UnderlineExtension(),
-        new BlockquoteExtension(),
-        new BoldExtension(),
-        new CodeBlockExtension(),
-        new DropCursorExtension(), // render cursor when dropping files, or moving image around
-        new TrailingNodeExtension(),
-        new BulletListExtension(),
-        new OrderedListExtension(),
-        new TaskListExtension(),
-        new ShortcutsExtension(),
-        new PlaceholderExtension({ placeholder }),
-        new MentionAtomExtension({
-          matchers: [
-            { name: 'at', char: '@', appendText: ' ' },
-            { name: 'tag', char: '#', appendText: ' ' },
-          ],
-        }),
-        new EmojiExtension({ plainText: false, data, moji: 'openmoji' }),
-        new FileExtension({
-          // uploadFileHandler: createConnectFileUploader,
-          priority: ExtensionPriority.Default,
-        }),
-      ],
+      () => {
+        return [
+          new LinkExtension({
+            autoLink: true,
+          }),
+          new GapCursorExtension(),
+          new HardBreakExtension(),
+          new ImageExtension({
+            enableResizing: true,
+            priority: ExtensionPriority.High,
+          }),
+          new ItalicExtension(),
+          new StrikeExtension(),
+          new UnderlineExtension(),
+          new BlockquoteExtension(),
+          new BoldExtension(),
+          new CodeBlockExtension(),
+          new DropCursorExtension(), // render cursor when dropping files, or moving image around
+          new TrailingNodeExtension(),
+          new BulletListExtension(),
+          new OrderedListExtension(),
+          new TaskListExtension(),
+          new ShortcutsExtension(),
+          new PlaceholderExtension({ placeholder }),
+          new MentionAtomExtension({
+            matchers: [
+              { name: 'at', char: '@', appendText: ' ' },
+              { name: 'tag', char: '#', appendText: ' ' },
+            ],
+          }),
+          new EmojiExtension({ plainText: false, data, moji: 'openmoji' }),
+          new FileExtension({
+            // uploadFileHandler: createConnectFileUploader,
+            priority: ExtensionPriority.Default,
+          }),
+        ];
+      },
       [placeholder]
     );
 
@@ -188,7 +189,7 @@ const Editor = forwardRef<CompanyEditorDef | undefined, Props>(
           onAutoSave?.(document);
         }
       },
-      [onAutoSave]
+      [onAutoSave, enableAutoSave]
     );
 
     const { manager, getContext, state, setState } = useRemirror({
@@ -218,15 +219,26 @@ const Editor = forwardRef<CompanyEditorDef | undefined, Props>(
       }
 
       setState(nextState);
-    }, []);
+    }, [onIsEmptyChange, setState]);
+    //
+    // useEffect(() => {
+    //   console.log('run code when changing editable mode...:' + editable);
+    //   const test1 = manager.extensions.find(c => c.name === 'image');
+    //   if (test1) {
+    //     console.log('current extension options ', test1.options);
+    //     console.log('set options to ', editable);
+    //     test1.setOptions({
+    //       enableResizing: editable
+    //     });
+    //     console.log('great success');
+    //   }
+    // }, [editable, manager.extensions])
 
-    useEffect(() => {
-      console.log('run code when changing editable mode...:' + editable);
-      const test1 = manager.extensions.find(c => c.name === 'image');
-      test1?.setOptions({
-        enableResizing: editable
-      });
-    }, [editable])
+    //
+    // const test5 = manager.extensions.find(c => c.name === 'image');
+    // const test6 = test5 as ImageExtension;
+    // console.log('render', test5, test5?.options, test6?.options.enableResizing);
+
 
     return (
       <Container readonly={!editable}>
